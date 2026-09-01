@@ -30,4 +30,26 @@ def create_connection(db_file):
 
 def create_table(cur, table_name):
     """Create a table in the SQLite database."""
-    
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS ? (
+            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            Type TEXT NOT NULL,
+            Amount REAL NOT NULL,
+            Date TEXT NOT NULL
+        )
+    """, (table_name,))
+
+    cur.connection.commit()
+
+    return f"Table '{table_name}' created successfully."
+
+def add_record(cur, table_name, record):
+    """Add a record to the specified table in the SQLite database."""
+    cur.execute("""
+        INSERT INTO ? (Type, Amount, Date)
+        VALUES (?, ?, ?)
+    """, (table_name, record[0], record[1], record[2]))
+
+    cur.connection.commit()
+
+    return f"Record added to table '{table_name}' successfully."
